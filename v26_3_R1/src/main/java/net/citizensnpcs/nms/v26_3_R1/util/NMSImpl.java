@@ -2346,6 +2346,15 @@ public class NMSImpl implements NMSBridge {
         return null;
     }
 
+    public static CraftEntity getBukkitEntityField(Entity entity) {
+        try {
+            return (CraftEntity) BUKKITENTITY_FIELD_GETTER.invoke(entity);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static BlockState getHandle(org.bukkit.block.Block block) {
         try {
             return (BlockState) GET_BLOCK_STATE.invoke(block);
@@ -2998,6 +3007,7 @@ public class NMSImpl implements NMSBridge {
             EntityType.HAPPY_GHAST, EntityType.SHULKER, EntityType.PHANTOM);
     private static final MethodHandle BRAIN_SENSORS_GETTER = NMS.getGetter(Brain.class, "sensors");
     private static final MethodHandle BRAIN_SETTER = NMS.getFirstSetter(LivingEntity.class, Brain.class);
+    private static final MethodHandle BUKKITENTITY_FIELD_GETTER = NMS.getGetter(Entity.class, "bukkitEntity");
     private static final MethodHandle BUKKITENTITY_FIELD_SETTER = NMS.getSetter(Entity.class, "bukkitEntity");
     private static final MethodHandle CHUNKMAP_UPDATE_PLAYER_STATUS = NMS.getMethodHandle(ChunkMap.class,
             "updatePlayerStatus", true, ServerPlayer.class, boolean.class);

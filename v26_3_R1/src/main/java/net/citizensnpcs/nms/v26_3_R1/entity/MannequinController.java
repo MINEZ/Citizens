@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.entity.CraftMannequin;
 import org.bukkit.entity.LivingEntity;
@@ -133,10 +134,16 @@ public class MannequinController extends MobEntityController {
 
         @Override
         public CraftLivingEntity getBukkitEntity() {
-            if (npc != null && !(super.getBukkitEntity() instanceof NPCHolder)) {
-                NMSImpl.setBukkitEntity(this, new MannequinNPC(this));
+            // Paper 26.3 overrides LivingEntity#getBukkitEntity with a covariant return type, which adds a bridge
+            // method that dispatches back to this override. Calling super.getBukkitEntity() would recurse until
+            // StackOverflowError, so read and write the field directly instead.
+            CraftEntity bukkitEntity = NMSImpl.getBukkitEntityField(this);
+            if (npc != null ? !(bukkitEntity instanceof NPCHolder) : bukkitEntity == null) {
+                bukkitEntity = npc != null ? new MannequinNPC(this)
+                        : new CraftMannequin((CraftServer) Bukkit.getServer(), this);
+                NMSImpl.setBukkitEntity(this, bukkitEntity);
             }
-            return (CraftLivingEntity) super.getBukkitEntity();
+            return (CraftLivingEntity) bukkitEntity;
         }
 
         @Override
