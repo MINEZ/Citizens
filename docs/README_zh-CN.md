@@ -65,7 +65,7 @@ git rebase upstream/master
 
 ### 修复
 
-- **mannequin NPC 在 Paper 26.3 上会让服务器主线程崩溃。** Paper 26.3 以更窄的返回类型覆写了 `LivingEntity#getBukkitEntity`，编译器随之生成一个桥接方法，转而调用最具体的那个覆写。Citizens 是对着 Spigot 编译的，Spigot 中没有这个覆写，于是 mannequin 自己的覆写调用 `super.getBukkitEntity()` 时，本想调用基类实现，实际进入的却是 Paper 的桥接方法——后者又回头调用 mannequin 的覆写，如此往复，直至栈溢出。生成一个 mannequin NPC 就足以触发。现改为直接读写实体的 `bukkitEntity` 字段，不再调用父类方法。
+- **mannequin NPC 在 Paper 26.3 上会让服务器主线程崩溃。** Paper 26.3 以更窄的返回类型覆写了 `LivingEntity#getBukkitEntity`，编译器随之生成一个桥接方法，转而调用最具体的那个覆写。Citizens 是对着 Spigot 编译的，Spigot 中没有这个覆写，于是 mannequin 自己的覆写调用 `super.getBukkitEntity()` 时，本想调用基类实现，实际进入的却是 Paper 的桥接方法——后者又回头调用 mannequin 的覆写，如此往复，直至栈溢出。生成一个 mannequin NPC 就足以触发。现改为直接读写实体的 `bukkitEntity` 字段，不再调用父类方法。上游随后也改写了这一方法，但仍会调用 `super.getBukkitEntity()`，在 Paper 上照旧栈溢出。
 
 ## 构建
 

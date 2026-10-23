@@ -65,7 +65,7 @@ Because rebasing rewrites commit hashes, pushing after a sync requires `git push
 
 ### Fixes
 
-- **Mannequin NPCs crashed the server thread on Paper 26.3.** Paper 26.3 overrides `LivingEntity#getBukkitEntity` with a narrower return type, which makes the compiler emit a bridge method that dispatches back to the most specific override. Citizens is compiled against Spigot, where that override does not exist, so the mannequin's own override called `super.getBukkitEntity()` expecting the base implementation and landed in Paper's bridge instead — which called the mannequin's override again, until the stack overflowed. Spawning a mannequin NPC was enough to trigger it. The override now reads and writes the entity's `bukkitEntity` field directly and never calls the superclass method.
+- **Mannequin NPCs crashed the server thread on Paper 26.3.** Paper 26.3 overrides `LivingEntity#getBukkitEntity` with a narrower return type, which makes the compiler emit a bridge method that dispatches back to the most specific override. Citizens is compiled against Spigot, where that override does not exist, so the mannequin's own override called `super.getBukkitEntity()` expecting the base implementation and landed in Paper's bridge instead — which called the mannequin's override again, until the stack overflowed. Spawning a mannequin NPC was enough to trigger it. The override now reads and writes the entity's `bukkitEntity` field directly and never calls the superclass method. Upstream has since reworked this method too, but it still calls `super.getBukkitEntity()` and therefore still overflows on Paper.
 
 ## Building
 
