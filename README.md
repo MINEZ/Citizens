@@ -81,6 +81,8 @@ The result lands in `dist/target/`, named `Citizens-<version>-b<upstream build>.
 
 The build also regenerates the upstream badge at the top of this page from the version in `pom.xml`, so it never has to be updated by hand. When upstream bumps its version, commit the regenerated `docs/badges/upstream.svg` along with the sync.
 
+Every push to `master` is also built by [GitHub Actions](https://github.com/MINEZ/Citizens/actions), which generates the Spigot versions with BuildTools, keeps them cached, and uploads the plugin jar as an artifact. Releases are built by running that workflow by hand with the build number filled in, and carry the jar it produces. A weekly scheduled run keeps the cache from expiring.
+
 ## Versioning
 
 The project version follows upstream unchanged. Fork revisions are recorded in the build number instead: in `Citizens-2.0.44-b<upstream build>.1`, the upstream build is the [upstream CI](https://ci.citizensnpcs.co/job/Citizens2/) build this is based on and the trailing `.1` is the fork revision. This keeps our version numbers from colliding with upstream releases and keeps `pom.xml` free of conflicts when syncing.
