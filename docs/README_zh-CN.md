@@ -81,7 +81,7 @@ mvn clean package -DBUILD_NUMBER=<上游构建号>.<Fork 修订号>
 
 构建时还会按 `pom.xml` 中的版本号重新生成本页顶部的 upstream 徽章，无须手动维护。上游提升版本号后，请将重新生成的 `docs/badges/upstream.svg` 随同步一并提交。
 
-每次推送到 `master` 也会由 [GitHub Actions](https://github.com/MINEZ/Citizens/actions) 构建：以 BuildTools 生成各 Spigot 版本并缓存，插件 jar 上传为 Artifact。发 Release 时手动运行这个工作流并填入构建号，Release 附带的就是它构建的 jar。每周一次的定时运行使缓存不会过期。
+每次推送到 `master` 也会由 [GitHub Actions](https://github.com/MINEZ/Citizens/actions) 构建：以 BuildTools 生成各 Spigot 版本并缓存，插件 jar 上传为 Artifact。构建号取自 `.github/build-number`（例如 `4269.1`），每次构建的 jar 都带着正确的版本号；同步上游或改了代码时一并修改它。Release 附带的是发布时那个提交构建的 jar。每周一次的定时运行使缓存不会过期。
 
 ## 版本号
 
